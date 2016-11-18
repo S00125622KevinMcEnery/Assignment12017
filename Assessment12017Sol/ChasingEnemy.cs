@@ -33,8 +33,8 @@ namespace Sprites
 
             startPosition = Position1;
             // calculate the collision field
-            collisionField = new Rectangle((int)position.X - texture.Width/framecount * collisionDistance,
-                                            (int)position.Y - texture.Height * collisionDistance,
+            collisionField = new Rectangle((int)Position.X - texture.Width/framecount * collisionDistance,
+                                            (int)Position.Y - texture.Height * collisionDistance,
                                               texture.Width/framecount * 3 * collisionDistance,
                                              texture.Height * 3 * collisionDistance);
         }
@@ -47,11 +47,11 @@ namespace Sprites
                 // The direction that the player is in is calculated
                 // by subtracting the position vector of this enemy sprite 
                 // from the position of the player
-                Vector2 direction = p.position - this.position;
+                Vector2 direction = p.Position - this.Position;
                 // We have to normalize the vector otherwise the jump is too big
                 direction.Normalize();
                 // we update the position of the Enemy Sprite based on the 
-                this.position += direction * Velocity;
+                this.Position += direction * Velocity;
             }            
             
         }
@@ -60,8 +60,8 @@ namespace Sprites
         {
             // recalculate the collision field as the Chase Enemy may have moved
             // if it is following the Player
-            collisionField = new Rectangle((int)position.X - SpriteWidth * collisionDistance,
-                                            (int)position.Y - SpriteHeight * collisionDistance,
+            collisionField = new Rectangle((int)Position.X - SpriteWidth * collisionDistance,
+                                            (int)Position.Y - SpriteHeight * collisionDistance,
                                             SpriteWidth * 3 * collisionDistance,
                                              SpriteHeight * 3 * collisionDistance);
             // call the base update => try Enemy Class => try Sprite Class

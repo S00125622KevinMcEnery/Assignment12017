@@ -21,7 +21,8 @@ namespace Sprites
             get { return spriteImage; }
             set { spriteImage = value; }
         }
-        public Vector2 position;
+        private Vector2 position;
+        private Vector2 previousPosition;
         public bool Alive = true;
 
         //the number of frames in the sprite sheet
@@ -48,6 +49,33 @@ namespace Sprites
             set { spriteHeight = value; }
         }
 
+        public Vector2 Position
+        {
+            get
+            {
+                return position;
+            }
+
+            set
+            {
+                
+                position = value;
+            }
+        }
+
+        public Vector2 PreviousPosition
+        {
+            get
+            {
+                return previousPosition;
+            }
+
+            set
+            {
+                previousPosition = value;
+            }
+        }
+
         //the source of our image within the sprite sheet to draw
         Rectangle sourceRectangle;
         SpriteEffects _effect;
@@ -63,12 +91,12 @@ namespace Sprites
         public AnimatedSprite(Texture2D texture,Vector2 userPosition, int framecount)
         {
             spriteImage = texture;
-            position = userPosition;
+            Position = userPosition;
             numberOfFrames = framecount;
             spriteHeight = spriteImage.Height;
             spriteWidth = spriteImage.Width / framecount;
             _effect = SpriteEffects.None;
-            BoundingRect = new Rectangle((int)this.position.X, (int)this.position.Y, this.spriteWidth, this.spriteHeight);
+            BoundingRect = new Rectangle((int)this.Position.X, (int)this.Position.Y, this.spriteWidth, this.spriteHeight);
 
         }
 
@@ -100,8 +128,8 @@ namespace Sprites
         {
             if (!Alive) return false;
 
-            BoundingRect = new Rectangle((int)this.position.X, (int)this.position.Y, this.spriteWidth, this.spriteHeight);
-            Rectangle otherBound = new Rectangle((int)otherSprite.position.X, (int)otherSprite.position.Y, otherSprite.spriteWidth, this.spriteHeight);
+            BoundingRect = new Rectangle((int)this.Position.X, (int)this.Position.Y, this.spriteWidth, this.spriteHeight);
+            Rectangle otherBound = new Rectangle((int)otherSprite.Position.X, (int)otherSprite.Position.Y, otherSprite.spriteWidth, this.spriteHeight);
             if (BoundingRect.Intersects(otherBound))
             {
                 InCollision = true;
@@ -117,9 +145,9 @@ namespace Sprites
         // Note assumes right facing sprite to begin
         public void Move(Vector2 delta)
         {
-            position += delta;
+            Position += delta;
             // update the new position of the Bounding Rect for an Animated sprite
-            BoundingRect = new Rectangle((int)this.position.X, (int)this.position.Y, this.spriteWidth, this.spriteHeight);
+            BoundingRect = new Rectangle((int)this.Position.X, (int)this.Position.Y, this.spriteWidth, this.spriteHeight);
             if (delta.X < 0)
                _effect = SpriteEffects.FlipHorizontally;
             else _effect = SpriteEffects.None;
@@ -131,7 +159,7 @@ namespace Sprites
             //draw the sprite , specify the postion and source for the image withtin the sprite sheet
             //spriteBatch.Begin();
             // Changed to allow for sprite effect
-            spriteBatch.Draw(spriteImage, position,sourceRectangle,Color.White,0f,Vector2.Zero,1.0f,_effect,0f);
+            spriteBatch.Draw(spriteImage, Position,sourceRectangle,Color.White,0f,Vector2.Zero,1.0f,_effect,0f);
             //spriteBatch.End();
         }       
 

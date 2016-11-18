@@ -50,6 +50,7 @@ namespace Sprites
 
         public override void Update(GameTime gameTime)
         {
+            PreviousPosition = Position;
             base.Update(gameTime);
             // TODO: Add your update logic here
             _direction = DIRECTION.STANDING;
@@ -61,7 +62,7 @@ namespace Sprites
             if (Keyboard.GetState().IsKeyDown(Keys.Up))
             {
                 _direction = DIRECTION.UP;
-                base.Move(new Vector2(0, -1) * _speed); 
+                base.Move(new Vector2(0, -1) * _speed);
             }
             if
             (Keyboard.GetState().IsKeyDown(Keys.Down))
@@ -74,16 +75,22 @@ namespace Sprites
                 _direction = DIRECTION.RIGHT;
                 base.Move(new Vector2(1, 0) * _speed);
             }
+            //else
+            //{
+            //    //Position = PreviousPosition;
+            //    _direction = DIRECTION.STANDING;
+            //}
+
             SpriteImage = _textures[(int)_direction];
 
-            if (_soundPlayer == null || _soundPlayer.State == SoundState.Stopped)
-            {
-                if (_direction != DIRECTION.STANDING)
-                {
-                    _soundPlayer = _directionSounds[(int)_direction].CreateInstance();
-                    _soundPlayer.Play();
-                }
-            }
+            //if (_soundPlayer == null || _soundPlayer.State == SoundState.Stopped)
+            //{
+            //    if (_direction != DIRECTION.STANDING)
+            //    {
+            //        _soundPlayer = _directionSounds[(int)_direction].CreateInstance();
+            //        _soundPlayer.Play();
+            //    }
+            //}
         }
     }
 }

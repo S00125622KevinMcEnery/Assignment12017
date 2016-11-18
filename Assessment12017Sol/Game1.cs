@@ -29,9 +29,8 @@ namespace Assessment12017Sol
 
         Vector2 BackCameraPos = Vector2.Zero;
         Player player;
-        Vector2 PrevPlayerPosition;
         ChasingEnemy[] chasers = new ChasingEnemy[5];
-
+        FollowCamera followCamera;
         Vector2 worldSize = new Vector2(2000, 2000);
         Rectangle worldRect;
         private Texture2D txbackground;
@@ -52,7 +51,7 @@ namespace Assessment12017Sol
         {
             // TODO: Add your initialization logic here
             worldRect = new Rectangle(new Point(0, 0), worldSize.ToPoint());
-
+            followCamera = new FollowCamera(this, Vector2.Zero, worldSize);
             base.Initialize();
         }
 
@@ -88,10 +87,10 @@ namespace Assessment12017Sol
 
 
             player = new Player(txs, sounds, new Vector2(0,0), 8, 0, 5);
-            player.position = new Vector2(GraphicsDevice.Viewport.Width / 2 - player.SpriteWidth / 2,
+            player.Position = player.PreviousPosition = new Vector2(GraphicsDevice.Viewport.Width / 2 - player.SpriteWidth / 2,
                                           GraphicsDevice.Viewport.Height / 2 - player.SpriteHeight / 2);
 
-            PrevPlayerPosition = player.position;
+            //PrevPlayerPosition = player.Position;
 
             #endregion Player Setup
 
@@ -131,7 +130,7 @@ namespace Assessment12017Sol
 
             #region update player
             player.Update(gameTime);
-            player.position = Vector2.Clamp(player.position, Vector2.Zero, (worldSize - new Vector2(player.SpriteWidth, player.SpriteHeight)));
+            player.Position = Vector2.Clamp(player.Position, Vector2.Zero, (worldSize - new Vector2(player.SpriteWidth, player.SpriteHeight)));
             #endregion
             #region Chasing
             
@@ -171,30 +170,7 @@ namespace Assessment12017Sol
             }
             #endregion Collectables
             #region Camera Control
-
-            
-
-            // if the player moves the camera follows but only if the player is past his starting position which is 
-            // in the Center of th viewport
-            if (player.position != PrevPlayerPosition)
-            {
-                
-                if(player.position.X > GraphicsDevice.Viewport.Width/2 && 
-                    player.position.X < worldSize.X - GraphicsDevice.Viewport.Width / 2)
-                        BackCameraPos.X +=  player.position.X - PrevPlayerPosition.X;
-
-                if (player.position.Y > GraphicsDevice.Viewport.Height/2 &&
-                    player.position.Y < worldSize.Y - GraphicsDevice.Viewport.Height/ 2)
-                            BackCameraPos.Y += player.position.Y - PrevPlayerPosition.Y;
-            }
-
-            BackCameraPos = Vector2.Clamp(BackCameraPos,
-                    Vector2.Zero,
-                    new Vector2(worldSize.X - GraphicsDevice.Viewport.Width,
-                                worldSize.Y - GraphicsDevice.Viewport.Height));
-            
-            // possible change in player position
-            PrevPlayerPosition = player.position;
+                    followCamera.Follow(player);    
             #endregion
             #region update timer
             int secs;
@@ -221,8 +197,7 @@ namespace Assessment12017Sol
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            Matrix BackgroundTransform = Matrix.Identity * Matrix.CreateTranslation(-BackCameraPos.X, -BackCameraPos.Y, 0);
-            spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, BackgroundTransform);
+            spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, followCamera.CameraTransform);
             spriteBatch.Draw(txbackground, worldRect, Color.White);
             player.Draw(spriteBatch);
 
